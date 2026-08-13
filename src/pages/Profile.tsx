@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { Area, AreaChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { ProgressRing } from '@/components/today/ProgressRing'
 import { Button } from '@/components/ui/button'
@@ -10,6 +10,7 @@ import type { Habit } from '@/lib/types'
 export function ProfilePage() {
   const { stats, habits, completions, toggleArchive, deleteHabit } = useData()
   const today = todayStr()
+  const [archiveError, setArchiveError] = useState('')
 
   const chartData = useMemo(() => {
     const toValue = (date: string): number | null => {
@@ -141,6 +142,7 @@ export function ProfilePage() {
           <h2 className="mb-3 text-sm font-semibold text-zinc-200">
             Archived ({archived.length})
           </h2>
+          {archiveError && <p className="mb-3 text-xs text-red-400">{archiveError}</p>}
           <ul className="flex flex-col gap-2">
             {archived.map((h: Habit) => (
               <li key={h.id} className="flex items-center gap-2 text-sm text-zinc-400">
@@ -149,7 +151,21 @@ export function ProfilePage() {
                 <Button variant="ghost" size="sm" onClick={() => toggleArchive(h)}>
                   Restore
                 </Button>
-                <Button variant="ghost" size="sm" className="text-red-400 hover:text-red-300" onClick={() => deleteHabit(h.id)}>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-red-400 hover:text-red-300"
+                  onClick={async () => {
+                    setArchiveError('')
+                    try {
+                      await deleteHabit(h.id)
+                    } catch (err) {
+                      setArchiveError(
+                        err instanceof Error ? err.message : 'Delete failed — try again.',
+                      )
+                    }
+                  }}
+                >
                   Delete
                 </Button>
               </li>

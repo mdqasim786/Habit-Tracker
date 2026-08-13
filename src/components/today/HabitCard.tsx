@@ -2,6 +2,8 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { HabitForm } from '@/components/habit/HabitForm'
 import { Menu } from '@/components/ui/menu'
+import { Modal } from '@/components/ui/modal'
+import { Button } from '@/components/ui/button'
 import { useData } from '@/context/DataContext'
 import { DAY_ORDER } from '@/lib/constants'
 import type { Habit } from '@/lib/types'
@@ -17,14 +19,20 @@ interface HabitCardProps {
 export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
   const { toggleArchive, deleteHabit } = useData()
   const [editing, setEditing] = useState(false)
-  const [confirmDelete, setConfirmDelete] = useState(false)
+  const [confirming, setConfirming] = useState(false)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState('')
 
   const remove = async () => {
-    if (!confirmDelete) {
-      setConfirmDelete(true)
-      return
+    setDeleting(true)
+    setDeleteError('')
+    try {
+      await deleteHabit(habit.id)
+      setConfirming(false)
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : 'Delete failed — try again.')
+      setDeleting(false)
     }
-    await deleteHabit(habit.id)
   }
 
   return (
@@ -121,9 +129,31 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
             label: habit.archived ? 'Restore' : 'Archive',
             onClick: () => toggleArchive(habit),
           },
-          { label: confirmDelete ? 'Confirm delete' : 'Delete', onClick: remove, danger: true },
+          { label: 'Delete', onClick: () => setConfirming(true), danger: true },
         ]}
       />
+
+      <Modal
+        open={confirming}
+        onClose={() => {
+          if (!deleting) setConfirming(false)
+        }}
+        title="Delete habit?"
+      >
+        <p className="text-sm text-zinc-400">
+          Delete <span className="font-semibold text-zinc-200">“{habit.title}”</span>? This removes
+          the habit and its tick history. This can't be undone.
+        </p>
+        {deleteError && <p className="mt-3 text-xs text-red-400">{deleteError}</p>}
+        <div className="mt-5 flex justify-end gap-2">
+          <Button variant="ghost" onClick={() => setConfirming(false)} disabled={deleting}>
+            Cancel
+          </Button>
+          <Button variant="danger" onClick={remove} disabled={deleting}>
+            {deleting ? 'Deleting…' : 'Delete'}
+          </Button>
+        </div>
+      </Modal>
 
       <HabitForm open={editing} onClose={() => setEditing(false)} habit={habit} />
     </motion.div>
