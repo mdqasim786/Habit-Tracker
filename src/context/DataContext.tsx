@@ -126,13 +126,19 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const deleteHabit = useCallback(
     async (id: string) => {
       if (!uid || !db) return
-      const snap = await getDocs(
-        query(collection(db, 'users', uid, 'completions'), where('habitId', '==', id)),
-      )
-      const batch = writeBatch(db)
-      for (const d of snap.docs) batch.delete(d.ref)
-      batch.delete(doc(db, 'users', uid, 'habits', id))
-      await batch.commit()
+      const habitRef = doc(db, 'users', uid, 'habits', id)
+      try {
+        const snap = await getDocs(
+          query(collection(db, 'users', uid, 'completions'), where('habitId', '==', id)),
+        )
+        const batch = writeBatch(db)
+        for (const d of snap.docs) batch.delete(d.ref)
+        batch.delete(habitRef)
+        await batch.commit()
+      } catch {
+        // ponytail: completion cleanup is best-effort — never let it block the delete
+        await deleteDoc(habitRef)
+      }
     },
     [uid],
   )
