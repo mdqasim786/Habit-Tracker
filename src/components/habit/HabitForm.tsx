@@ -1,10 +1,10 @@
-import { useEffect, useState, type FormEvent } from 'react'
+import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
 import { DayPicker } from '@/components/habit/DayPicker'
 import { useData } from '@/context/DataContext'
 import { ALL_DAYS, HABIT_COLORS, HABIT_ICONS } from '@/lib/constants'
-import type { Habit } from '@/lib/types'
+import type { Habit, NewHabit } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 interface HabitFormProps {
@@ -20,6 +20,9 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
   const [days, setDays] = useState<number[]>([...ALL_DAYS])
   const [color, setColor] = useState(HABIT_COLORS[0])
   const [icon, setIcon] = useState(HABIT_ICONS[0])
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const savingRef = useRef(false)
 
   useEffect(() => {
     if (open) {
@@ -28,23 +31,36 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
       setDays(habit?.scheduledDays ?? [...ALL_DAYS])
       setColor(habit?.color ?? HABIT_COLORS[0])
       setIcon(habit?.icon ?? HABIT_ICONS[0])
+      setSaving(false)
+      setError('')
+      savingRef.current = false
     }
   }, [open, habit])
 
   const save = async (e: FormEvent) => {
     e.preventDefault()
     const trimmed = title.trim()
-    if (!trimmed) return
-    const payload = {
-      title: trimmed,
-      description: description.trim() || undefined,
-      scheduledDays: days,
-      color,
-      icon,
+    if (!trimmed || savingRef.current) return
+    savingRef.current = true // synchronous lock — state alone is too slow to block a double-click
+    setSaving(true)
+    setError('')
+    try {
+      const payload: NewHabit = {
+        title: trimmed,
+        scheduledDays: days,
+        color,
+        icon,
+      }
+      const desc = description.trim()
+      if (desc) payload.description = desc
+      if (habit) await updateHabit(habit.id, payload)
+      else await addHabit(payload)
+      onClose()
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not save habit')
+      setSaving(false)
+      savingRef.current = false
     }
-    if (habit) await updateHabit(habit.id, payload)
-    else await addHabit(payload)
-    onClose()
   }
 
   return (
@@ -116,11 +132,12 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
         </div>
 
         <div className="flex justify-end gap-2 pt-1">
-          <Button type="button" variant="ghost" onClick={onClose}>
+          {error && <p className="mr-auto self-center text-xs text-red-400">{error}</p>}
+          <Button type="button" variant="ghost" onClick={onClose} disabled={saving}>
             Cancel
           </Button>
-          <Button type="submit" disabled={!title.trim()}>
-            {habit ? 'Save changes' : 'Create habit'}
+          <Button type="submit" disabled={!title.trim() || saving}>
+            {saving ? 'Saving…' : habit ? 'Save changes' : 'Create habit'}
           </Button>
         </div>
       </form>

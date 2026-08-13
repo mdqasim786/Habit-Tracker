@@ -30,6 +30,7 @@ interface DataContextValue {
   completions: Completion[]
   stats: Stats
   ready: boolean
+  error: string | null
   addHabit: (input: NewHabit) => Promise<void>
   updateHabit: (id: string, patch: Partial<Habit>) => Promise<void>
   toggleArchive: (habit: Habit) => Promise<void>
@@ -47,6 +48,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [habits, setHabits] = useState<Habit[]>([])
   const [completions, setCompletions] = useState<Completion[]>([])
   const [loaded, setLoaded] = useState({ habits: false, completions: false })
+  const [error, setError] = useState<string | null>(null)
   const uid = user?.uid ?? null
 
   useEffect(() => {
@@ -54,15 +56,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
     setHabits([])
     setCompletions([])
     setLoaded({ habits: false, completions: false })
+    setError(null)
 
+    const handleErr = (e: unknown) =>
+      setError(e instanceof Error ? e.message : 'Firestore sync failed')
     const unsubHabits = onSnapshot(collection(db, 'users', uid, 'habits'), (snap) => {
       setHabits(snap.docs.map((d) => ({ id: d.id, ...d.data() })) as Habit[])
       setLoaded((l) => ({ ...l, habits: true }))
-    })
+    }, handleErr)
     const unsubComps = onSnapshot(collection(db, 'users', uid, 'completions'), (snap) => {
       setCompletions(snap.docs.map((d) => d.data()) as Completion[])
       setLoaded((l) => ({ ...l, completions: true }))
-    })
+    }, handleErr)
     return () => {
       unsubHabits()
       unsubComps()
@@ -151,6 +156,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       completions,
       stats,
       ready: loaded.habits && loaded.completions,
+      error,
       addHabit,
       updateHabit,
       toggleArchive,
@@ -165,6 +171,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
       completions,
       stats,
       loaded,
+      error,
       addHabit,
       updateHabit,
       toggleArchive,

@@ -9,7 +9,7 @@ import { useData } from '@/context/DataContext'
 import { fmtLong, todayStr } from '@/lib/utils'
 
 export function TodayPage() {
-  const { dueOn, isDoneOn, setCompleted, habits, stats, ready } = useData()
+  const { dueOn, isDoneOn, setCompleted, habits, stats, ready, error } = useData()
   const today = todayStr()
   const due = dueOn(today)
   const doneCount = due.filter((h) => isDoneOn(h.id, today)).length
@@ -31,6 +31,12 @@ export function TodayPage() {
   return (
     <div className="relative mx-auto max-w-2xl px-4 pb-28 pt-6 sm:pb-10">
       {allDone && <Confetti key={bursts} />}
+
+      {error && (
+        <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+          {error}
+        </div>
+      )}
 
       <header className="mb-6 flex items-start justify-between">
         <div>
