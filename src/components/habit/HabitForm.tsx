@@ -16,7 +16,6 @@ interface HabitFormProps {
 export function HabitForm({ open, onClose, habit }: HabitFormProps) {
   const { addHabit, updateHabit } = useData()
   const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
   const [days, setDays] = useState<number[]>([...ALL_DAYS])
   const [color, setColor] = useState(HABIT_COLORS[0])
   const [icon, setIcon] = useState(HABIT_ICONS[0])
@@ -28,7 +27,6 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
   useEffect(() => {
     if (open) {
       setTitle(habit?.title ?? '')
-      setDescription(habit?.description ?? '')
       setDays(habit?.scheduledDays ?? [...ALL_DAYS])
       setColor(habit?.color ?? HABIT_COLORS[0])
       setIcon(habit?.icon ?? HABIT_ICONS[0])
@@ -54,8 +52,6 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
         icon,
         phase,
       }
-      const desc = description.trim()
-      if (desc) payload.description = desc
       if (habit) await updateHabit(habit.id, payload)
       else await addHabit(payload)
       onClose()
@@ -81,13 +77,6 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
             className="h-11 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-emerald-500/60 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
           />
         </div>
-
-        <input
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Why it matters (optional)"
-          className="h-10 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-300 placeholder:text-zinc-500 focus:border-emerald-500/60 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
-        />
 
         <div className="flex flex-col gap-2">
           <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
