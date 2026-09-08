@@ -52,6 +52,7 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
         scheduledDays: days,
         color,
         icon,
+        phase,
       }
       const desc = description.trim()
       if (desc) payload.description = desc
@@ -93,6 +94,30 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
             Scheduled days
           </span>
           <DayPicker value={days} onChange={setDays} />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">Phase</span>
+          <div className="flex gap-2">
+            {PHASES.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setPhase(p.id)}
+                className={cn(
+                  'flex-1 cursor-pointer rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all',
+                  phase === p.id
+                    ? 'border-transparent text-white'
+                    : 'border-zinc-700 bg-zinc-950 text-zinc-400 hover:border-zinc-600 hover:text-zinc-200',
+                )}
+                style={phase === p.id ? { background: p.color, color: '#000' } : undefined}
+              >
+                <span className="block text-sm">{p.id === 'morning' ? '🌅' : p.id === 'afternoon' ? '☀️' : '🌙'}</span>
+                <span className="mt-0.5 block">{p.label}</span>
+                <span className="mt-0.5 block text-[10px] font-normal opacity-70">{p.timeRange}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">

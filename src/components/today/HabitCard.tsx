@@ -5,7 +5,7 @@ import { Menu } from '@/components/ui/menu'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
 import { useData } from '@/context/DataContext'
-import { DAY_ORDER } from '@/lib/constants'
+import { DAY_ORDER, phaseColor } from '@/lib/constants'
 import type { Habit } from '@/lib/types'
 import { cn } from '@/lib/utils'
 

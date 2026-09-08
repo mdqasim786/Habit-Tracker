@@ -3,7 +3,9 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { TodayPage } from '@/pages/Today'
 import { CalendarPage } from '@/pages/Calendar'
 import { ProfilePage } from '@/pages/Profile'
+import { PhasePieChart } from '@/components/today/PhasePieChart'
 import { useAuth } from '@/context/AuthContext'
+import { useData } from '@/context/DataContext'
 import { cn } from '@/lib/utils'
 
 type View = 'today' | 'calendar' | 'profile'
@@ -17,6 +19,7 @@ const NAV: { id: View; label: string; icon: ReactNode }[] = [
 export function Shell() {
   const [view, setView] = useState<View>('today')
   const { user, signOutUser } = useAuth()
+  const { habits, completions } = useData()
 
   return (
     <div className="flex min-h-dvh">
@@ -42,6 +45,12 @@ export function Shell() {
             </button>
           ))}
         </nav>
+        <div className="mt-6 rounded-xl border border-zinc-800 bg-zinc-900/50 p-4">
+          <p className="mb-3 text-center text-[10px] font-semibold uppercase tracking-widest text-zinc-500">
+            Today's Phases
+          </p>
+          <PhasePieChart habits={habits} completions={completions} />
+        </div>
         <div className="mt-auto">
           <div className="mb-3 rounded-xl border border-zinc-800 bg-zinc-900/50 p-3">
             <div className="flex items-center gap-2.5">
