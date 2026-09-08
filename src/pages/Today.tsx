@@ -8,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import { useData } from '@/context/DataContext'
 import { PHASES } from '@/lib/constants'
 import { fmtLong, todayStr } from '@/lib/utils'
-import type { Habit, Phase } from '@/lib/types'
 
 export function TodayPage() {
   const { dueOn, isDoneOn, setCompleted, habits, stats, ready, error } = useData()

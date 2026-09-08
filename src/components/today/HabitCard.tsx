@@ -46,7 +46,9 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
         done
           ? 'border-emerald-500/25 bg-emerald-500/[0.06]'
           : 'border-zinc-800 bg-zinc-900/60 hover:border-zinc-700',
+        habit.phase ? 'border-l-4' : '',
       )}
+      style={habit.phase ? { borderLeftColor: phaseColor(habit.phase) } : undefined}
     >
       <motion.button
         layout
