@@ -3,8 +3,8 @@ import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
 import { DayPicker } from '@/components/habit/DayPicker'
 import { useData } from '@/context/DataContext'
-import { ALL_DAYS, HABIT_COLORS, HABIT_ICONS } from '@/lib/constants'
-import type { Habit, NewHabit } from '@/lib/types'
+import { ALL_DAYS, HABIT_COLORS, HABIT_ICONS, PHASES } from '@/lib/constants'
+import type { Habit, NewHabit, Phase } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 interface HabitFormProps {
@@ -20,6 +20,7 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
   const [days, setDays] = useState<number[]>([...ALL_DAYS])
   const [color, setColor] = useState(HABIT_COLORS[0])
   const [icon, setIcon] = useState(HABIT_ICONS[0])
+  const [phase, setPhase] = useState<Phase>('morning')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const savingRef = useRef(false)
@@ -31,6 +32,7 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
       setDays(habit?.scheduledDays ?? [...ALL_DAYS])
       setColor(habit?.color ?? HABIT_COLORS[0])
       setIcon(habit?.icon ?? HABIT_ICONS[0])
+      setPhase(habit?.phase ?? 'morning')
       setSaving(false)
       setError('')
       savingRef.current = false

@@ -1,3 +1,5 @@
+import type { Phase } from './types'
+
 export const HABIT_COLORS = [
   '#10b981',
   '#22d3ee',
@@ -38,3 +40,25 @@ export const DAY_ORDER: { label: string; wd: number }[] = [
 ]
 
 export const ALL_DAYS = DAY_ORDER.map((d) => d.wd)
+
+export interface PhaseInfo {
+  id: Phase
+  label: string
+  timeRange: string
+  color: string
+  dimColor: string
+}
+
+export const PHASES: PhaseInfo[] = [
+  { id: 'morning', label: 'Morning', timeRange: '5:00 AM – 10:00 AM', color: '#fbbf24', dimColor: '#fbbf2440' },
+  { id: 'afternoon', label: 'Afternoon', timeRange: '10:00 AM – 6:00 PM', color: '#22d3ee', dimColor: '#22d3ee40' },
+  { id: 'evening', label: 'Evening', timeRange: '6:00 PM – 10:00 PM', color: '#818cf8', dimColor: '#818cf840' },
+]
+
+export function phaseColor(phase?: Phase): string {
+  return PHASES.find((p) => p.id === phase)?.color ?? '#52525b'
+}
+
+export function phaseInfo(phase?: Phase): PhaseInfo | undefined {
+  return PHASES.find((p) => p.id === phase)
+}
