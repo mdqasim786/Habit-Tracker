@@ -9,21 +9,22 @@ export const HABIT_COLORS = [
   '#e879f9',
 ]
 
+/** Keys into the icon set in components/ui/Icon.tsx. Legacy emoji values fall back to "target". */
 export const HABIT_ICONS = [
-  '⚔️',
-  '💻',
-  '🏋️',
-  '📚',
-  '🧘',
-  '🏃',
-  '🧠',
-  '🎸',
-  '🥗',
-  '✍️',
-  '💧',
-  '😴',
-  '🚀',
-  '🎨',
+  'target',
+  'code',
+  'dumbbell',
+  'book',
+  'heart',
+  'move',
+  'sparkles',
+  'music',
+  'apple',
+  'pen',
+  'droplet',
+  'moon',
+  'rocket',
+  'palette',
 ]
 
 /** Display order Mon→Sun, mapped to Date#getDay() values (0 = Sunday). */

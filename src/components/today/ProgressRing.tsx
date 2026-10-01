@@ -21,7 +21,7 @@ export function ProgressRing({ value, size = 108, stroke = 9, label = 'today', s
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#27272a"
+          stroke="#e2e8f0"
           strokeWidth={stroke}
         />
         <motion.circle
@@ -29,7 +29,7 @@ export function ProgressRing({ value, size = 108, stroke = 9, label = 'today', s
           cy={size / 2}
           r={r}
           fill="none"
-          stroke="#10b981"
+          stroke="#059669"
           strokeWidth={stroke}
           strokeLinecap="round"
           strokeDasharray={c}
@@ -38,11 +38,13 @@ export function ProgressRing({ value, size = 108, stroke = 9, label = 'today', s
         />
       </svg>
       <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-        <span className="text-3xl font-bold tabular-nums tracking-tight">
+        <span className="text-3xl font-bold tabular-nums tracking-tight text-slate-900">
           {clamped}
           {suffix}
         </span>
-        <span className="text-[10px] uppercase tracking-widest text-zinc-500">{label}</span>
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+          {label}
+        </span>
       </div>
     </div>
   )

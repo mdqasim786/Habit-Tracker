@@ -1,10 +1,12 @@
 import { useState, type ReactNode } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Icon } from '@/components/ui/Icon'
 import { cn } from '@/lib/utils'
 
 interface MenuItem {
   label: string
   onClick: () => void
+  icon?: string
   danger?: boolean
 }
 
@@ -27,6 +29,7 @@ export function Menu({ trigger, items, align = 'right', triggerClassName }: Menu
         className={triggerClassName}
         aria-haspopup="menu"
         aria-expanded={open}
+        aria-label="Habit actions"
       >
         {trigger}
       </button>
@@ -41,7 +44,7 @@ export function Menu({ trigger, items, align = 'right', triggerClassName }: Menu
               exit={{ opacity: 0, scale: 0.95, y: -4 }}
               transition={{ duration: 0.12 }}
               className={cn(
-                'absolute z-50 mt-1 min-w-40 overflow-hidden rounded-xl border border-zinc-800 bg-zinc-900 py-1 shadow-xl shadow-black/50',
+                'absolute z-50 mt-1 min-w-44 overflow-hidden rounded-2xl border border-slate-200 bg-white p-1 shadow-xl shadow-slate-900/10',
                 align === 'right' ? 'right-0' : 'left-0',
               )}
             >
@@ -54,10 +57,13 @@ export function Menu({ trigger, items, align = 'right', triggerClassName }: Menu
                     item.onClick()
                   }}
                   className={cn(
-                    'flex w-full items-center px-3 py-2 text-left text-sm cursor-pointer hover:bg-zinc-800/70',
-                    item.danger ? 'text-red-400' : 'text-zinc-200',
+                    'flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2.5 py-2 text-left text-sm font-medium transition-colors',
+                    item.danger
+                      ? 'text-red-600 hover:bg-red-50'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900',
                   )}
                 >
+                  {item.icon && <Icon name={item.icon} size={15} />}
                   {item.label}
                 </button>
               ))}

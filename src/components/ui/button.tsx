@@ -3,15 +3,16 @@ import { cva, type VariantProps } from 'class-variance-authority'
 import { cn } from '@/lib/utils'
 
 const buttonVariants = cva(
-  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-lg text-sm font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/50 disabled:pointer-events-none disabled:opacity-50 cursor-pointer select-none',
+  'inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-xl text-sm font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500/40 disabled:pointer-events-none disabled:opacity-50 cursor-pointer select-none active:scale-[0.98]',
   {
     variants: {
       variant: {
-        default: 'bg-emerald-500 text-emerald-950 hover:bg-emerald-400 font-semibold',
-        secondary: 'bg-zinc-800 text-zinc-100 hover:bg-zinc-700',
-        outline: 'border border-zinc-700 bg-transparent text-zinc-200 hover:bg-zinc-800/60',
-        ghost: 'text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/60',
-        danger: 'bg-red-500/10 text-red-400 hover:bg-red-500/20 border border-red-500/20',
+        default:
+          'bg-emerald-600 text-white shadow-sm shadow-emerald-600/20 hover:bg-emerald-500 hover:shadow-md hover:shadow-emerald-600/20',
+        secondary: 'bg-slate-100 text-slate-700 hover:bg-slate-200',
+        outline: 'border border-slate-200 bg-white text-slate-700 shadow-sm hover:border-slate-300 hover:bg-slate-50',
+        ghost: 'text-slate-500 hover:bg-slate-100 hover:text-slate-900',
+        danger: 'bg-red-50 text-red-600 border border-red-200 hover:bg-red-100',
       },
       size: {
         default: 'h-10 px-4',

@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { AnimatePresence, motion } from 'framer-motion'
+import { Icon } from '@/components/ui/Icon'
 import { cn } from '@/lib/utils'
 
 interface ModalProps {
@@ -26,7 +27,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
       {open && (
         <div className="fixed inset-0 z-50 grid place-items-end sm:place-items-center">
           <motion.div
-            className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+            className="absolute inset-0 bg-slate-900/30 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -36,7 +37,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
             role="dialog"
             aria-modal="true"
             className={cn(
-              'relative z-10 w-full sm:max-w-lg rounded-t-2xl sm:rounded-2xl border border-zinc-800 bg-zinc-900 shadow-2xl shadow-black/60',
+              'relative z-10 w-full sm:max-w-lg rounded-t-3xl sm:rounded-3xl border border-slate-200 bg-white p-6 shadow-2xl shadow-slate-900/10',
               className,
             )}
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
@@ -44,21 +45,19 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
             exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ type: 'spring', duration: 0.45, bounce: 0.15 }}
           >
-            {title && (
-              <div className="flex items-center justify-between border-b border-zinc-800 px-5 py-4">
-                <h2 className="text-sm font-semibold text-zinc-100">{title}</h2>
+            {(title || onClose) && (
+              <div className="mb-4 flex items-start justify-between gap-4">
+                {title && <h2 className="text-base font-bold tracking-tight text-slate-900">{title}</h2>}
                 <button
                   onClick={onClose}
-                  className="grid h-8 w-8 place-items-center rounded-lg text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200 cursor-pointer"
+                  className="grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
                   aria-label="Close"
                 >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                    <path d="M18 6 6 18M6 6l12 12" />
-                  </svg>
+                  <Icon name="x" size={16} />
                 </button>
               </div>
             )}
-            <div className="px-5 py-4">{children}</div>
+            {children}
           </motion.div>
         </div>
       )}

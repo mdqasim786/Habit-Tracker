@@ -5,6 +5,7 @@ import { ProgressRing } from '@/components/today/ProgressRing'
 import { Confetti } from '@/components/today/Confetti'
 import { HabitForm } from '@/components/habit/HabitForm'
 import { Button } from '@/components/ui/button'
+import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
 import { fmtLong, todayStr } from '@/lib/utils'
 
@@ -33,23 +34,24 @@ export function TodayPage() {
       {allDone && <Confetti key={bursts} />}
 
       {error && (
-        <div className="mb-4 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-300">
+        <div className="mb-4 flex items-center gap-2 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-medium text-red-600">
+          <Icon name="alert" size={16} />
           {error}
         </div>
       )}
 
       <header className="mb-6 flex items-start justify-between">
         <div>
-          <p className="text-xs font-medium uppercase tracking-widest text-zinc-500">
+          <p className="text-xs font-semibold uppercase tracking-widest text-slate-400">
             {fmtLong(today)}
           </p>
-          <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-50">
+          <h1 className="mt-1 text-2xl font-bold tracking-tight text-slate-900">
             {allDone ? 'Perfect day.' : 'Discipline.'}
           </h1>
         </div>
         {stats.currentStreak > 0 && (
-          <div className="flex items-center gap-1.5 rounded-full border border-orange-500/25 bg-orange-500/10 px-3 py-1.5 text-sm font-semibold text-orange-300">
-            <span>🔥</span>
+          <div className="flex items-center gap-1.5 rounded-full border border-amber-200 bg-amber-50 px-3 py-1.5 text-sm font-bold text-amber-700">
+            <Icon name="flame" size={15} />
             {stats.currentStreak} day{stats.currentStreak === 1 ? '' : 's'}
           </div>
         )}
@@ -59,19 +61,20 @@ export function TodayPage() {
         key={pct}
         initial={{ scale: 0.96, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="mb-8 flex items-center justify-center rounded-3xl border border-zinc-800 bg-zinc-900/50 py-8"
+        className="mb-8 flex items-center justify-center rounded-3xl border border-slate-200 bg-white py-8 shadow-sm shadow-slate-900/5"
       >
         <ProgressRing value={pct} />
       </motion.div>
 
       <div className="mb-4 flex items-center justify-between">
-        <h2 className="text-sm font-semibold text-zinc-300">
+        <h2 className="text-sm font-bold text-slate-700">
           {due.length === 0
             ? 'Nothing scheduled today'
             : `${doneCount} of ${due.length} done`}
         </h2>
-        <Button variant="secondary" size="sm" onClick={() => setFormOpen(true)}>
-          <span className="text-base leading-none">+</span> New habit
+        <Button variant="outline" size="sm" onClick={() => setFormOpen(true)}>
+          <Icon name="plus" size={15} strokeWidth={2.2} />
+          New habit
         </Button>
       </div>
 
@@ -87,10 +90,12 @@ export function TodayPage() {
         ))}
 
         {habits.length === 0 && ready && (
-          <div className="rounded-2xl border border-dashed border-zinc-800 p-10 text-center">
-            <p className="text-4xl">⚔️</p>
-            <h3 className="mt-3 text-sm font-semibold text-zinc-200">No habits yet</h3>
-            <p className="mx-auto mt-1 max-w-xs text-xs text-zinc-500">
+          <div className="rounded-3xl border border-dashed border-slate-300 bg-white/60 p-10 text-center">
+            <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl bg-emerald-50 text-emerald-600">
+              <Icon name="target" size={26} />
+            </div>
+            <h3 className="mt-4 text-sm font-bold text-slate-900">No habits yet</h3>
+            <p className="mx-auto mt-1 max-w-xs text-xs leading-relaxed text-slate-500">
               Build a habit like a notebook entry — pick the days you're committing to.
             </p>
             <Button className="mt-5" onClick={() => setFormOpen(true)}>
@@ -100,7 +105,7 @@ export function TodayPage() {
         )}
 
         {due.length === 0 && habits.length > 0 && (
-          <p className="py-6 text-center text-sm text-zinc-500">
+          <p className="rounded-2xl border border-slate-200 bg-white py-6 text-center text-sm text-slate-500">
             Rest day. Nothing scheduled for today — see you tomorrow.
           </p>
         )}
