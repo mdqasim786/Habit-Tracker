@@ -48,13 +48,16 @@ export function computeStats(
   }
   const { current, longest } = computeStreaks(statuses)
 
+  // 30-day rate per scheduled habit-day, so a single tick always moves the score.
+  // ponytail: day-level all-or-nothing gave partial days zero credit — score looked frozen
   let sched30 = 0
   let ok30 = 0
   for (let i = 29; i >= 0; i--) {
-    const st = dayStatus(addDays(today, -i), active, completions)
-    if (st !== 'neutral') {
+    const d = addDays(today, -i)
+    for (const h of active) {
+      if (h.createdAt.slice(0, 10) > d || !isScheduled(h, d)) continue
       sched30++
-      if (st === 'all') ok30++
+      if (isDone(completions, h.id, d)) ok30++
     }
   }
   const successRate30 = sched30 ? Math.round((ok30 / sched30) * 100) : 0

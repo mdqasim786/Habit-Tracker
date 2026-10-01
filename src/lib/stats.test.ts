@@ -136,4 +136,23 @@ describe('computeStats', () => {
     expect(rate.completed).toBe(2)
     expect(rate.rate).toBe(40)
   })
+
+  it('one tick moves the discipline score (never frozen)', () => {
+    const daily = [
+      habit('a', [0, 1, 2, 3, 4, 5, 6]),
+      habit('b', [0, 1, 2, 3, 4, 5, 6]),
+      habit('c', [0, 1, 2, 3, 4, 5, 6]),
+    ]
+    const before = computeStats(daily, [], '2026-08-13')
+    const after = computeStats(daily, [done('a', '2026-08-13')], '2026-08-13')
+    expect(after.disciplineScore).toBeGreaterThan(before.disciplineScore)
+    expect(after.successRate30).toBeGreaterThan(0)
+  })
+
+  it('success rate gives partial days partial credit', () => {
+    const two = [habit('a', [0, 1, 2, 3, 4, 5, 6]), habit('b', [0, 1, 2, 3, 4, 5, 6])]
+    const stats = computeStats(two, [done('a', '2026-08-13')], '2026-08-13')
+    // 1 of 2 habits ticked today => 1/26 habit-days in the window, not 0%
+    expect(stats.successRate30).toBe(4)
+  })
 })
