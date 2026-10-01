@@ -43,10 +43,10 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
       className={cn(
-        'group flex items-center gap-4 rounded-2xl border p-4 transition-colors',
+        'group flex items-center gap-4 rounded-2xl border bg-white p-4 shadow-sm shadow-slate-900/5 transition-colors',
         done
-          ? 'border-emerald-500/25 bg-emerald-500/[0.06]'
-          : 'border-zinc-800 bg-zinc-900/60 hover:border-zinc-700',
+          ? 'border-emerald-200 bg-emerald-50/40'
+          : 'border-slate-200 hover:border-slate-300',
       )}
     >
       <motion.button
@@ -57,8 +57,8 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
         className={cn(
           'relative grid h-12 w-12 shrink-0 cursor-pointer place-items-center rounded-full border-2 transition-colors',
           done
-            ? 'border-emerald-500 bg-emerald-500 text-emerald-950'
-            : 'border-zinc-600 text-transparent hover:border-emerald-500/60 hover:text-emerald-500/30',
+            ? 'border-emerald-600 bg-emerald-600 text-white'
+            : 'border-slate-200 bg-white text-transparent hover:border-emerald-400 hover:text-emerald-200',
         )}
         whileTap={{ scale: 0.85 }}
       >
@@ -86,15 +86,15 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
       <div className="min-w-0 flex-1">
         <div className="flex items-center gap-2">
           <span
-            className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md text-sm leading-none"
-            style={{ background: `${habit.color}26` }}
+            className="flex h-7 w-7 shrink-0 items-center justify-center rounded-lg"
+            style={{ background: `${habit.color}1a`, color: habit.color }}
           >
-            {habit.icon}
+            <Icon name={habit.icon} size={15} />
           </span>
           <h3
             className={cn(
-              'truncate text-sm font-semibold',
-              done ? 'text-zinc-400 line-through decoration-emerald-500/50' : 'text-zinc-100',
+              'truncate text-sm font-bold',
+              done ? 'text-slate-400 line-through' : 'text-slate-900',
             )}
           >
             {habit.title}
@@ -102,12 +102,12 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
         </div>
         <div className="mt-1.5 flex flex-wrap items-center gap-1">
           {habit.description && (
-            <span className="mr-1 truncate text-xs text-zinc-500">{habit.description}</span>
+            <span className="mr-1 truncate text-xs text-slate-500">{habit.description}</span>
           )}
           {DAY_ORDER.filter((d) => habit.scheduledDays.includes(d.wd)).map(({ label, wd }) => (
             <span
               key={wd}
-              className="rounded-md bg-zinc-800/80 px-1.5 py-0.5 text-[10px] font-medium text-zinc-500"
+              className="rounded-md bg-slate-100 px-1.5 py-0.5 text-[10px] font-semibold text-slate-500"
             >
               {label}
             </span>
@@ -116,21 +116,16 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
       </div>
 
       <Menu
-        triggerClassName="shrink-0 grid h-8 w-8 cursor-pointer place-items-center rounded-lg text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200"
-        trigger={
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-            <circle cx="5" cy="12" r="1.7" />
-            <circle cx="12" cy="12" r="1.7" />
-            <circle cx="19" cy="12" r="1.7" />
-          </svg>
-        }
+        triggerClassName="grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
+        trigger={<Icon name="more" size={16} />}
         items={[
-          { label: 'Edit', onClick: () => setEditing(true) },
+          { label: 'Edit', onClick: () => setEditing(true), icon: 'edit' },
           {
             label: habit.archived ? 'Restore' : 'Archive',
             onClick: () => toggleArchive(habit),
+            icon: 'archive',
           },
-          { label: 'Delete', onClick: () => setConfirming(true), danger: true },
+          { label: 'Delete', onClick: () => setConfirming(true), icon: 'trash', danger: true },
         ]}
       />
 
@@ -141,11 +136,13 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
         }}
         title="Delete habit?"
       >
-        <p className="text-sm text-zinc-400">
-          Delete <span className="font-semibold text-zinc-200">“{habit.title}”</span>? This removes
+        <p className="text-sm leading-relaxed text-slate-500">
+          Delete <span className="font-semibold text-slate-800">{habit.title}</span>? This removes
           the habit and its tick history. This can't be undone.
         </p>
-        {deleteError && <p className="mt-3 text-xs text-red-400">{deleteError}</p>}
+        {deleteError && (
+          <p className="mt-3 text-xs font-medium text-red-600">{deleteError}</p>
+        )}
         <div className="mt-5 flex justify-end gap-2">
           <Button variant="ghost" onClick={() => setConfirming(false)} disabled={deleting}>
             Cancel

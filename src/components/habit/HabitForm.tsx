@@ -1,6 +1,8 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Icon } from '@/components/ui/Icon'
 import { DayPicker } from '@/components/habit/DayPicker'
 import { useData } from '@/context/DataContext'
 import { ALL_DAYS, HABIT_COLORS, HABIT_ICONS } from '@/lib/constants'
@@ -67,35 +69,41 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
     <Modal open={open} onClose={onClose} title={habit ? 'Edit habit' : 'New habit'}>
       <form onSubmit={save} className="flex flex-col gap-5">
         <div className="flex items-start gap-3">
-          <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl text-xl" style={{ background: `${color}22` }}>
-            {icon}
+          <div
+            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl"
+            style={{ background: `${color}1a`, color }}
+          >
+            <Icon name={icon} size={20} />
           </div>
-          <input
+          <Input
             autoFocus
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="What are you committing to?"
-            className="h-11 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-emerald-500/60 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+            aria-label="Habit name"
           />
         </div>
 
-        <input
+        <Input
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Why it matters (optional)"
-          className="h-10 w-full rounded-xl border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-300 placeholder:text-zinc-500 focus:border-emerald-500/60 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+          aria-label="Why it matters"
+          className="h-10 text-slate-600"
         />
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             Scheduled days
           </span>
           <DayPicker value={days} onChange={setDays} />
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">Color</span>
-          <div className="flex flex-wrap gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            Color
+          </span>
+          <div className="flex flex-wrap gap-2.5">
             {HABIT_COLORS.map((c) => (
               <button
                 key={c}
@@ -103,8 +111,8 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
                 onClick={() => setColor(c)}
                 aria-label={`color ${c}`}
                 className={cn(
-                  'h-8 w-8 rounded-full transition-transform cursor-pointer',
-                  color === c && 'scale-110 ring-2 ring-white/70 ring-offset-2 ring-offset-zinc-900',
+                  'h-7 w-7 cursor-pointer rounded-full transition-transform',
+                  color === c && 'scale-110 ring-2 ring-slate-900/70 ring-offset-2',
                 )}
                 style={{ background: c }}
               />
@@ -113,26 +121,32 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-xs font-medium uppercase tracking-wider text-zinc-500">Icon</span>
-          <div className="grid grid-cols-7 gap-1">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            Icon
+          </span>
+          <div className="grid grid-cols-7 gap-1.5">
             {HABIT_ICONS.map((ic) => (
               <button
                 key={ic}
                 type="button"
                 onClick={() => setIcon(ic)}
+                aria-label={ic}
+                aria-pressed={icon === ic}
                 className={cn(
-                  'flex h-9 items-center justify-center rounded-lg text-lg cursor-pointer',
-                  icon === ic ? 'bg-zinc-700/70 ring-1 ring-zinc-500' : 'hover:bg-zinc-800',
+                  'grid h-9 cursor-pointer place-items-center rounded-xl transition-colors',
+                  icon === ic
+                    ? 'bg-emerald-50 text-emerald-600 ring-1 ring-emerald-500/40'
+                    : 'text-slate-400 hover:bg-slate-100 hover:text-slate-700',
                 )}
               >
-                {ic}
+                <Icon name={ic} size={17} />
               </button>
             ))}
           </div>
         </div>
 
         <div className="flex justify-end gap-2 pt-1">
-          {error && <p className="mr-auto self-center text-xs text-red-400">{error}</p>}
+          {error && <p className="mr-auto self-center text-xs font-medium text-red-600">{error}</p>}
           <Button type="button" variant="ghost" onClick={onClose} disabled={saving}>
             Cancel
           </Button>

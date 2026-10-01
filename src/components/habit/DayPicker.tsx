@@ -18,10 +18,10 @@ export function DayPicker({ value, onChange }: DayPickerProps) {
         type="button"
         onClick={toggleAll}
         className={cn(
-          'h-9 rounded-lg border px-3 text-xs font-medium transition-colors cursor-pointer',
+          'h-9 cursor-pointer rounded-xl border px-3 text-xs font-semibold transition-colors',
           allActive
-            ? 'border-emerald-500/60 bg-emerald-500/15 text-emerald-300'
-            : 'border-zinc-700 text-zinc-400 hover:bg-zinc-800',
+            ? 'border-emerald-600 bg-emerald-600 text-white'
+            : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50',
         )}
       >
         Every day
@@ -35,10 +35,10 @@ export function DayPicker({ value, onChange }: DayPickerProps) {
             onClick={() => toggle(wd)}
             aria-pressed={active}
             className={cn(
-              'h-9 rounded-lg border px-3 text-xs font-semibold transition-all cursor-pointer',
+              'h-9 cursor-pointer rounded-xl border px-3 text-xs font-bold transition-colors',
               active
-                ? 'border-emerald-500/60 bg-emerald-500 text-emerald-950'
-                : 'border-zinc-700 text-zinc-400 hover:bg-zinc-800',
+                ? 'border-emerald-600 bg-emerald-50 text-emerald-700'
+                : 'border-slate-200 bg-white text-slate-500 hover:bg-slate-50',
             )}
           >
             {label}
