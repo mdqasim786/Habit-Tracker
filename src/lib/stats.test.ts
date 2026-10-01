@@ -45,7 +45,7 @@ const habit = (id: string, days: number[]): Habit => ({
   id,
   title: id,
   color: '#10b981',
-  icon: '⚔️',
+  icon: 'target',
   scheduledDays: days,
   createdAt: '2026-08-01T00:00:00.000Z',
   archived: false,

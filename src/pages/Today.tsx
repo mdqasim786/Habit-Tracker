@@ -97,13 +97,16 @@ export function TodayPage() {
                     style={{ background: phase.color }}
                   />
                   <div>
-                    <h3 className="text-sm font-semibold text-zinc-200">
-                      {phase.id === 'morning' ? '🌅' : phase.id === 'afternoon' ? '☀️' : '🌙'}{' '}
-                      {phase.label} Phase
+                    <h3 className="flex items-center gap-1.5 text-sm font-bold text-slate-800">
+                      <Icon
+                        name={phase.id === 'morning' ? 'sun' : phase.id === 'afternoon' ? 'sparkles' : 'moon'}
+                        size={15}
+                      />
+                      {phase.label}
                     </h3>
-                    <p className="text-[10px] text-zinc-500">{phase.timeRange}</p>
+                    <p className="text-[10px] font-medium text-slate-400">{phase.timeRange}</p>
                   </div>
-                  <span className="ml-auto text-xs text-zinc-500">
+                  <span className="ml-auto text-xs font-semibold text-slate-400">
                     {phase.done}/{phase.habits.length}
                   </span>
                 </div>
@@ -126,10 +129,10 @@ export function TodayPage() {
         {unassigned.length > 0 && (
           <div>
             <div className="mb-3 flex items-center gap-3">
-              <div className="h-3 w-3 rounded-full bg-zinc-600" />
+              <div className="h-3 w-3 rounded-full bg-slate-300" />
               <div>
-                <h3 className="text-sm font-semibold text-zinc-200">Unassigned</h3>
-                <p className="text-[10px] text-zinc-500">Edit habit to assign a phase</p>
+                <h3 className="text-sm font-bold text-slate-800">Unassigned</h3>
+                <p className="text-[10px] font-medium text-slate-400">Edit habit to assign a phase</p>
               </div>
             </div>
             <div className="flex flex-col gap-3">

@@ -90,17 +90,19 @@ export function PhasePieChart({ habits, completions }: PhasePieChartProps) {
                 endAngle={-270}
                 stroke="none"
               >
-                <Cell fill="#27272a" />
+                <Cell fill="#e2e8f0" />
               </Pie>
             )}
           </PieChart>
         </ResponsiveContainer>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-2xl font-bold text-zinc-100">{overallPct}%</span>
-          <span className="text-[10px] text-zinc-500">done</span>
+          <span className="text-2xl font-bold text-slate-900">{overallPct}%</span>
+          <span className="text-[10px] font-semibold uppercase tracking-wider text-slate-400">
+            done
+          </span>
         </div>
       </div>
-      <div className="flex flex-col gap-1.5 w-full">
+      <div className="flex w-full flex-col gap-1.5">
         {phaseData.map((p) => {
           const info = PHASES.find((ph) => ph.id === p.phase)!
           const pct = p.total > 0 ? Math.round((p.completed / p.total) * 100) : 0
@@ -108,10 +110,10 @@ export function PhasePieChart({ habits, completions }: PhasePieChartProps) {
             <div key={p.phase} className="flex items-center gap-2 text-xs">
               <span
                 className="h-2.5 w-2.5 shrink-0 rounded-full"
-                style={{ background: p.total > 0 ? info.color : '#3f3f46' }}
+                style={{ background: p.total > 0 ? info.color : '#cbd5e1' }}
               />
-              <span className="text-zinc-400">{info.label}</span>
-              <span className="ml-auto text-zinc-500">
+              <span className="font-medium text-slate-500">{info.label}</span>
+              <span className="ml-auto font-semibold text-slate-400">
                 {p.total > 0 ? `${p.completed}/${p.total} (${pct}%)` : '—'}
               </span>
             </div>

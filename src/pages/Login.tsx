@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react'
 import { motion } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import { useAuth } from '@/context/AuthContext'
 
 export function LoginPage() {
@@ -36,43 +37,43 @@ export function LoginPage() {
         className="w-full max-w-sm"
       >
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-emerald-500/10 ring-1 ring-emerald-500/30">
+          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-emerald-600 shadow-lg shadow-emerald-600/25">
             <svg width="26" height="26" viewBox="0 0 32 32" fill="none">
-              <path d="M10 7v18M10 7l12 9-12 9" stroke="#10b981" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M10 7v18M10 7l12 9-12 9" stroke="#ffffff" strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
           </div>
-          <h1 className="text-2xl font-bold tracking-tight text-zinc-50">Discipline</h1>
-          <p className="mt-1 text-sm text-zinc-500">Show up for yourself. Every scheduled day.</p>
+          <h1 className="text-2xl font-bold tracking-tight text-slate-900">Discipline</h1>
+          <p className="mt-1 text-sm text-slate-500">Show up for yourself. Every scheduled day.</p>
         </div>
 
-        <div className="rounded-3xl border border-zinc-800 bg-zinc-900/60 p-6">
+        <div className="rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5">
           <Button variant="outline" size="lg" className="w-full" onClick={signInWithGoogle}>
             <GoogleMark />
             Continue with Google
           </Button>
 
-          <div className="my-5 flex items-center gap-3 text-[10px] uppercase tracking-widest text-zinc-600">
-            <div className="h-px flex-1 bg-zinc-800" /> or with email <div className="h-px flex-1 bg-zinc-800" />
+          <div className="my-5 flex items-center gap-3 text-[10px] font-semibold uppercase tracking-widest text-slate-400">
+            <div className="h-px flex-1 bg-slate-200" /> or with email <div className="h-px flex-1 bg-slate-200" />
           </div>
 
           <form onSubmit={submit} className="flex flex-col gap-3">
-            <input
+            <Input
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
               autoComplete="email"
-              className="h-11 rounded-xl border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-emerald-500/60 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              aria-label="Email address"
             />
-            <input
+            <Input
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
               autoComplete={mode === 'in' ? 'current-password' : 'new-password'}
-              className="h-11 rounded-xl border border-zinc-700 bg-zinc-950 px-3 text-sm text-zinc-100 placeholder:text-zinc-500 focus:border-emerald-500/60 focus:outline-none focus:ring-2 focus:ring-emerald-500/20"
+              aria-label="Password"
             />
-            {error && <p className="text-xs text-red-400">{error}</p>}
+            {error && <p className="text-xs font-medium text-red-600">{error}</p>}
             <Button type="submit" size="lg" disabled={busy}>
               {busy ? 'Please wait…' : mode === 'in' ? 'Sign in' : 'Create account'}
             </Button>
@@ -83,7 +84,7 @@ export function LoginPage() {
               setMode((m) => (m === 'in' ? 'up' : 'in'))
               setError('')
             }}
-            className="mt-4 w-full cursor-pointer text-center text-xs text-zinc-500 hover:text-zinc-300"
+            className="mt-4 w-full cursor-pointer text-center text-xs font-semibold text-slate-500 transition-colors hover:text-emerald-700"
           >
             {mode === 'in' ? "New here? Create an account" : 'Have an account? Sign in'}
           </button>

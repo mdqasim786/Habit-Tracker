@@ -45,7 +45,7 @@ export function Modal({ open, onClose, title, children, className }: ModalProps)
             exit={{ opacity: 0, y: 24, scale: 0.98 }}
             transition={{ type: 'spring', duration: 0.45, bounce: 0.15 }}
           >
-            {(title || onClose) && (
+            {title && (
               <div className="mb-4 flex items-start justify-between gap-4">
                 {title && <h2 className="text-base font-bold tracking-tight text-slate-900">{title}</h2>}
                 <button
