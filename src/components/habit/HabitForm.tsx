@@ -5,8 +5,8 @@ import { Input } from '@/components/ui/input'
 import { Icon } from '@/components/ui/Icon'
 import { DayPicker } from '@/components/habit/DayPicker'
 import { useData } from '@/context/DataContext'
-import { ALL_DAYS, HABIT_COLORS, HABIT_ICONS } from '@/lib/constants'
-import type { Habit, NewHabit } from '@/lib/types'
+import { ALL_DAYS, HABIT_COLORS, HABIT_ICONS, PHASES } from '@/lib/constants'
+import type { Habit, NewHabit, Phase } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 interface HabitFormProps {
@@ -22,6 +22,7 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
   const [days, setDays] = useState<number[]>([...ALL_DAYS])
   const [color, setColor] = useState(HABIT_COLORS[0])
   const [icon, setIcon] = useState(HABIT_ICONS[0])
+  const [phase, setPhase] = useState<Phase>('morning')
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const savingRef = useRef(false)
@@ -33,6 +34,7 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
       setDays(habit?.scheduledDays ?? [...ALL_DAYS])
       setColor(habit?.color ?? HABIT_COLORS[0])
       setIcon(habit?.icon ?? HABIT_ICONS[0])
+      setPhase(habit?.phase ?? 'morning')
       setSaving(false)
       setError('')
       savingRef.current = false
@@ -52,6 +54,7 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
         scheduledDays: days,
         color,
         icon,
+        phase,
       }
       const desc = description.trim()
       if (desc) payload.description = desc
@@ -97,6 +100,35 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
             Scheduled days
           </span>
           <DayPicker value={days} onChange={setDays} />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            Phase of day
+          </span>
+          <div className="flex gap-2">
+            {PHASES.map((p) => (
+              <button
+                key={p.id}
+                type="button"
+                onClick={() => setPhase(p.id)}
+                aria-pressed={phase === p.id}
+                className={cn(
+                  'flex-1 cursor-pointer rounded-xl border px-3 py-2.5 text-xs font-semibold transition-all',
+                  phase === p.id
+                    ? 'border-transparent shadow-sm'
+                    : 'border-slate-200 bg-white text-slate-500 hover:border-slate-300',
+                )}
+                style={phase === p.id ? { background: p.color, color: '#fff' } : undefined}
+              >
+                <span className="flex justify-center">
+                  <Icon name={p.id === 'morning' ? 'sun' : p.id === 'afternoon' ? 'sparkles' : 'moon'} size={16} />
+                </span>
+                <span className="mt-0.5 block">{p.label}</span>
+                <span className="mt-0.5 block text-[10px] font-normal opacity-70">{p.timeRange}</span>
+              </button>
+            ))}
+          </div>
         </div>
 
         <div className="flex flex-col gap-2">

@@ -6,7 +6,7 @@ import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
-import { DAY_ORDER } from '@/lib/constants'
+import { DAY_ORDER, phaseColor } from '@/lib/constants'
 import type { Habit } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -47,7 +47,9 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
         done
           ? 'border-emerald-200 bg-emerald-50/40'
           : 'border-slate-200 hover:border-slate-300',
+        habit.phase ? 'border-l-4' : '',
       )}
+      style={habit.phase ? { borderLeftColor: phaseColor(habit.phase) } : undefined}
     >
       <motion.button
         layout

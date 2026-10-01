@@ -7,6 +7,7 @@ import { HabitForm } from '@/components/habit/HabitForm'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
+import { PHASES } from '@/lib/constants'
 import { fmtLong, todayStr } from '@/lib/utils'
 
 export function TodayPage() {
@@ -28,6 +29,13 @@ export function TodayPage() {
 
   const toggle = (habitId: string) =>
     setCompleted(habitId, today, !isDoneOn(habitId, today))
+
+  const grouped = PHASES.map((p) => {
+    const habitsInPhase = due.filter((h) => h.phase === p.id)
+    const doneInPhase = habitsInPhase.filter((h) => isDoneOn(h.id, today)).length
+    return { ...p, habits: habitsInPhase, done: doneInPhase }
+  })
+  const unassigned = due.filter((h) => !h.phase)
 
   return (
     <div className="relative mx-auto max-w-2xl px-4 pb-28 pt-6 sm:pb-10">
@@ -78,16 +86,65 @@ export function TodayPage() {
         </Button>
       </div>
 
-      <div className="flex flex-col gap-3">
-        {due.map((h, i) => (
-          <HabitCard
-            key={h.id}
-            habit={h}
-            index={i}
-            done={isDoneOn(h.id, today)}
-            onToggle={() => toggle(h.id)}
-          />
+      <div className="flex flex-col gap-6">
+        {grouped.map((phase) => (
+          <div key={phase.id}>
+            {phase.habits.length > 0 && (
+              <>
+                <div className="mb-3 flex items-center gap-3">
+                  <div
+                    className="h-3 w-3 rounded-full"
+                    style={{ background: phase.color }}
+                  />
+                  <div>
+                    <h3 className="text-sm font-semibold text-zinc-200">
+                      {phase.id === 'morning' ? '🌅' : phase.id === 'afternoon' ? '☀️' : '🌙'}{' '}
+                      {phase.label} Phase
+                    </h3>
+                    <p className="text-[10px] text-zinc-500">{phase.timeRange}</p>
+                  </div>
+                  <span className="ml-auto text-xs text-zinc-500">
+                    {phase.done}/{phase.habits.length}
+                  </span>
+                </div>
+                <div className="flex flex-col gap-3">
+                  {phase.habits.map((h, i) => (
+                    <HabitCard
+                      key={h.id}
+                      habit={h}
+                      index={i}
+                      done={isDoneOn(h.id, today)}
+                      onToggle={() => toggle(h.id)}
+                    />
+                  ))}
+                </div>
+              </>
+            )}
+          </div>
         ))}
+
+        {unassigned.length > 0 && (
+          <div>
+            <div className="mb-3 flex items-center gap-3">
+              <div className="h-3 w-3 rounded-full bg-zinc-600" />
+              <div>
+                <h3 className="text-sm font-semibold text-zinc-200">Unassigned</h3>
+                <p className="text-[10px] text-zinc-500">Edit habit to assign a phase</p>
+              </div>
+            </div>
+            <div className="flex flex-col gap-3">
+              {unassigned.map((h, i) => (
+                <HabitCard
+                  key={h.id}
+                  habit={h}
+                  index={i}
+                  done={isDoneOn(h.id, today)}
+                  onToggle={() => toggle(h.id)}
+                />
+              ))}
+            </div>
+          </div>
+        )}
 
         {habits.length === 0 && ready && (
           <div className="rounded-3xl border border-dashed border-slate-300 bg-white/60 p-10 text-center">
