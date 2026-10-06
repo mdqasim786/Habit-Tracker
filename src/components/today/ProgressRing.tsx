@@ -15,7 +15,8 @@ export function ProgressRing({ value, size = 108, stroke = 9, label = 'today', s
 
   return (
     <div className="relative" style={{ width: size, height: size }}>
-      <svg width={size} height={size} className="-rotate-90">
+      <div className="absolute inset-0 rounded-full bg-emerald-500/10 blur-xl opacity-60" />
+      <svg width={size} height={size} className="-rotate-90 relative z-10">
         <circle
           cx={size / 2}
           cy={size / 2}
@@ -37,7 +38,7 @@ export function ProgressRing({ value, size = 108, stroke = 9, label = 'today', s
           transition={{ type: 'spring', duration: 0.8, bounce: 0.2 }}
         />
       </svg>
-      <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+      <div className="absolute inset-0 z-10 flex flex-col items-center justify-center text-center">
         <span className="text-3xl font-bold tabular-nums tracking-tight text-slate-900">
           {clamped}
           {suffix}
