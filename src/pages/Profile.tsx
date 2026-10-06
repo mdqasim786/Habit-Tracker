@@ -4,8 +4,8 @@ import { ProgressRing } from '@/components/today/ProgressRing'
 import { Button } from '@/components/ui/button'
 import { useData } from '@/context/DataContext'
 import { dayStatus } from '@/lib/stats'
-import { addDays, fmtShort, todayStr } from '@/lib/utils'
-import type { Habit } from '@/lib/types'
+import { addDays, cn, fmtShort, todayStr } from '@/lib/utils'
+import type { Completion, DayStatus, Habit } from '@/lib/types'
 
 export function ProfilePage() {
   const { stats, habits, completions, toggleArchive, deleteHabit } = useData()
@@ -35,7 +35,7 @@ export function ProfilePage() {
         <h1 className="mt-1 text-2xl font-bold tracking-tight text-zinc-50">Profile</h1>
       </header>
 
-      <div className="mb-4 flex items-center gap-6 rounded-3xl border border-zinc-800 bg-zinc-900/50 p-6">
+      <div className="mb-4 flex items-center gap-6 rounded-3xl surface p-6">
         <ProgressRing value={stats.disciplineScore} label="score" suffix="" size={116} />
         <div>
           <p className="text-sm font-semibold text-zinc-100">Discipline score</p>
@@ -52,7 +52,7 @@ export function ProfilePage() {
         <StatCard label="Success rate" value={`${stats.successRate30}`} sub="last 30 days" />
       </div>
 
-      <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5">
+      <section className="mt-6 rounded-2xl surface p-5">
         <h2 className="mb-4 text-sm font-semibold text-zinc-200">Consistency — last 30 days</h2>
         <div className="h-44 w-full">
           <ResponsiveContainer width="100%" height="100%">
@@ -102,7 +102,9 @@ export function ProfilePage() {
         </div>
       </section>
 
-      <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5">
+      <StreakHeatmap habits={habits} completions={completions} />
+
+      <section className="mt-6 rounded-2xl surface p-5">
         <h2 className="mb-4 text-sm font-semibold text-zinc-200">Habit breakdown</h2>
         {stats.habits.length === 0 ? (
           <p className="text-sm text-zinc-500">No active habits yet.</p>
@@ -138,7 +140,7 @@ export function ProfilePage() {
       </section>
 
       {archived.length > 0 && (
-        <section className="mt-6 rounded-2xl border border-zinc-800 bg-zinc-900/50 p-5">
+        <section className="mt-6 rounded-2xl surface p-5">
           <h2 className="mb-3 text-sm font-semibold text-zinc-200">
             Archived ({archived.length})
           </h2>
@@ -189,12 +191,68 @@ function StatCard({
   accent?: boolean
 }) {
   return (
-    <div className="rounded-2xl border border-zinc-800 bg-zinc-900/50 p-4">
+    <div className="rounded-2xl surface p-4">
       <p className="text-[10px] font-semibold uppercase tracking-wider text-zinc-500">{label}</p>
       <p className={accent ? 'mt-1 text-2xl font-bold text-orange-300' : 'mt-1 text-2xl font-bold text-zinc-100'}>
         {value}
       </p>
       <p className="text-[10px] text-zinc-600">{sub}</p>
     </div>
+  )
+}
+
+const HEATMAP_WEEKS = 17
+const HEATMAP_DAYS = HEATMAP_WEEKS * 7
+
+const HEATMAP_COLORS: Record<DayStatus, string> = {
+  all: 'bg-emerald-500',
+  partial: 'bg-amber-500/70',
+  missed: 'bg-zinc-800',
+  neutral: 'bg-zinc-800/40',
+}
+
+function StreakHeatmap({ habits, completions }: { habits: Habit[]; completions: Completion[] }) {
+  const today = todayStr()
+
+  const cells = useMemo(() => {
+    return Array.from({ length: HEATMAP_DAYS }, (_, i) => {
+      const date = addDays(today, i - (HEATMAP_DAYS - 1))
+      const status = dayStatus(date, habits, completions)
+      return { date, status, isToday: date === today }
+    })
+  }, [habits, completions, today])
+
+  return (
+    <section className="mt-6 rounded-2xl surface p-5">
+      <div className="mb-4 flex items-baseline justify-between">
+        <h2 className="text-sm font-semibold text-zinc-200">Consistency heatmap</h2>
+        <span className="text-[10px] text-zinc-600">last {HEATMAP_WEEKS} weeks</span>
+      </div>
+
+      <div className="overflow-x-auto no-scrollbar">
+        <div className="grid grid-flow-col grid-rows-7 gap-[3px]">
+          {cells.map((c) => (
+            <div
+              key={c.date}
+              title={`${fmtShort(c.date)} — ${c.status}`}
+              className={cn(
+                'h-3 w-3 rounded-[3px] transition-colors',
+                HEATMAP_COLORS[c.status],
+                c.isToday && 'ring-2 ring-emerald-400 ring-offset-1 ring-offset-zinc-900',
+              )}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-3 flex items-center justify-end gap-1.5 text-[10px] text-zinc-600">
+        <span>Less</span>
+        <span className="h-3 w-3 rounded-[3px] bg-zinc-800/40" />
+        <span className="h-3 w-3 rounded-[3px] bg-zinc-800" />
+        <span className="h-3 w-3 rounded-[3px] bg-amber-500/70" />
+        <span className="h-3 w-3 rounded-[3px] bg-emerald-500" />
+        <span>More</span>
+      </div>
+    </section>
   )
 }

@@ -42,10 +42,10 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: index * 0.05, duration: 0.3 }}
       className={cn(
-        'group flex items-center gap-4 rounded-2xl border p-4 transition-colors',
+        'group flex items-center gap-4 rounded-2xl p-4 card-hover surface',
         done
-          ? 'border-emerald-500/25 bg-emerald-500/[0.06]'
-          : 'border-zinc-800 bg-zinc-900/60 hover:border-zinc-700',
+          ? 'border-emerald-500/30 bg-emerald-500/[0.08]'
+          : 'border-zinc-800/90 bg-zinc-900/70',
         habit.phase ? 'border-l-4' : '',
       )}
       style={habit.phase ? { borderLeftColor: phaseColor(habit.phase) } : undefined}
