@@ -15,8 +15,8 @@ export function SetupPage() {
       <div className="w-full max-w-lg rounded-3xl border border-slate-200 bg-white p-6 shadow-xl shadow-slate-900/5">
         <h1 className="text-lg font-bold text-slate-900">Connect Firebase</h1>
         <p className="mt-2 text-sm leading-relaxed text-slate-500">
-          Discipline needs a Firebase project to run. This build reads keys from an env file —
-          your keys never ship to the browser if you don't commit them.
+          Discipline needs a Firebase project to run. Add your Firebase web-app configuration to a
+          local env file; it is ignored by Git so it will not be committed accidentally.
         </p>
         <ol className="mt-5 flex flex-col gap-3 text-sm text-slate-600">
           <Step n="1">
@@ -52,7 +52,8 @@ export function SetupPage() {
         </pre>
         <p className="mt-4 text-xs text-slate-500">
           Restart <code className="rounded bg-slate-100 px-1.5 py-0.5">npm run dev</code> after
-          adding the file.
+          adding the file. Firebase web config is public by design; never add service-account or
+          other server credentials here.
         </p>
       </div>
     </div>
