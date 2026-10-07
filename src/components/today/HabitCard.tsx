@@ -18,7 +18,7 @@ interface HabitCardProps {
 }
 
 export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
-  const { toggleArchive, deleteHabit } = useData()
+  const { deleteHabit } = useData()
   const [editing, setEditing] = useState(false)
   const [confirming, setConfirming] = useState(false)
   const [deleting, setDeleting] = useState(false)
