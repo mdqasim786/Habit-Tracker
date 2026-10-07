@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { computeStreaks } from './streak'
 import { computeStats, dayStatus } from './stats'
+import { normalizePhases, phaseIncludes } from './constants'
 import type { Habit } from './types'
 
 describe('computeStreaks', () => {
@@ -77,6 +78,19 @@ describe('dayStatus', () => {
   it('neutral before a habit was created', () => {
     const late = { ...habit('c', [0, 1, 2, 3, 4, 5, 6]), createdAt: '2026-08-10T00:00:00.000Z' }
     expect(dayStatus('2026-08-09', [late], [])).toBe('neutral')
+  })
+})
+
+describe('multi-phase habits', () => {
+  it('normalizes both single and multiple-phase values', () => {
+    expect(normalizePhases('morning')).toEqual(['morning'])
+    expect(normalizePhases(['morning', 'evening'])).toEqual(['morning', 'evening'])
+    expect(normalizePhases(undefined)).toEqual([])
+  })
+
+  it('recognizes a habit that belongs to multiple phases', () => {
+    expect(phaseIncludes(['morning', 'afternoon'], 'afternoon')).toBe(true)
+    expect(phaseIncludes(['morning', 'afternoon'], 'evening')).toBe(false)
   })
 })
 
