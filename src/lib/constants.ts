@@ -56,10 +56,25 @@ export const PHASES: PhaseInfo[] = [
   { id: 'evening', label: 'Evening', timeRange: '6:00 PM – 10:00 PM', color: '#818cf8', dimColor: '#818cf840' },
 ]
 
-export function phaseColor(phase?: Phase): string {
-  return PHASES.find((p) => p.id === phase)?.color ?? '#52525b'
+export function normalizePhases(phase?: Phase | Phase[] | null): Phase[] {
+  if (!phase) return []
+
+  const values = Array.isArray(phase) ? phase : [phase]
+  return values.filter(
+    (value, index, arr) => arr.indexOf(value) === index && PHASES.some((p) => p.id === value),
+  ) as Phase[]
 }
 
-export function phaseInfo(phase?: Phase): PhaseInfo | undefined {
-  return PHASES.find((p) => p.id === phase)
+export function phaseIncludes(phase: Phase | Phase[] | null | undefined, target: Phase): boolean {
+  return normalizePhases(phase).includes(target)
+}
+
+export function phaseColor(phase?: Phase | Phase[] | null): string {
+  const primary = normalizePhases(phase)[0]
+  return PHASES.find((p) => p.id === primary)?.color ?? '#52525b'
+}
+
+export function phaseInfo(phase?: Phase | Phase[] | null): PhaseInfo | undefined {
+  const primary = normalizePhases(phase)[0]
+  return PHASES.find((p) => p.id === primary)
 }

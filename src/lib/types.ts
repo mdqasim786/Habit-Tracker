@@ -3,6 +3,7 @@ export type Weekday = number // 0 = Sunday … 6 = Saturday (matches Date#getDay
 export type DayStatus = 'all' | 'partial' | 'missed' | 'neutral'
 
 export type Phase = 'morning' | 'afternoon' | 'evening'
+export type HabitPhase = Phase | Phase[]
 
 export interface Habit {
   id: string
@@ -11,7 +12,7 @@ export interface Habit {
   color: string
   icon: string
   scheduledDays: Weekday[]
-  phase?: Phase
+  phase?: HabitPhase
   createdAt: string // ISO timestamp
   archived: boolean
 }

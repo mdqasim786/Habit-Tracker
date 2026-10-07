@@ -7,7 +7,7 @@ import { HabitForm } from '@/components/habit/HabitForm'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
-import { PHASES } from '@/lib/constants'
+import { PHASES, normalizePhases, phaseIncludes } from '@/lib/constants'
 import { cn, fmtLong, todayStr } from '@/lib/utils'
 
 type Filter = 'all' | 'morning' | 'afternoon' | 'evening' | 'unassigned'
@@ -36,18 +36,18 @@ export function TodayPage() {
 
   const visible = useMemo(() => {
     let list = due
-    if (filter === 'unassigned') list = list.filter((h) => !h.phase)
-    else if (filter !== 'all') list = list.filter((h) => h.phase === filter)
+    if (filter === 'unassigned') list = list.filter((h) => normalizePhases(h.phase).length === 0)
+    else if (filter !== 'all') list = list.filter((h) => phaseIncludes(h.phase, filter))
     if (hideDone) list = list.filter((h) => !isDoneOn(h.id, today))
     return list
   }, [due, filter, hideDone, isDoneOn, today])
 
   const grouped = PHASES.map((p) => {
-    const habitsInPhase = visible.filter((h) => h.phase === p.id)
+    const habitsInPhase = visible.filter((h) => phaseIncludes(h.phase, p.id))
     const doneInPhase = habitsInPhase.filter((h) => isDoneOn(h.id, today)).length
     return { ...p, habits: habitsInPhase, done: doneInPhase }
   })
-  const unassigned = visible.filter((h) => !h.phase)
+  const unassigned = visible.filter((h) => normalizePhases(h.phase).length === 0)
 
   return (
     <div className="relative mx-auto max-w-2xl px-4 pb-28 pt-6 sm:pb-10">

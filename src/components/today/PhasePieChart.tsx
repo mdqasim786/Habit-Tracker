@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
-import { PHASES } from '@/lib/constants'
+import { PHASES, phaseIncludes } from '@/lib/constants'
 import { isScheduled, todayStr } from '@/lib/utils'
 import { isDone } from '@/lib/stats'
 import type { Habit, Completion, Phase } from '@/lib/types'
@@ -18,7 +18,9 @@ interface PhaseSlice {
 function getPhaseData(habits: Habit[], completions: Completion[]): PhaseSlice[] {
   const today = todayStr()
   return PHASES.map((p) => {
-    const phaseHabits = habits.filter((h) => !h.archived && h.phase === p.id && isScheduled(h, today))
+    const phaseHabits = habits.filter(
+      (h) => !h.archived && phaseIncludes(h.phase, p.id) && isScheduled(h, today),
+    )
     const completed = phaseHabits.filter((h) => isDone(completions, h.id, today)).length
     return { phase: p.id, completed, total: phaseHabits.length }
   })
