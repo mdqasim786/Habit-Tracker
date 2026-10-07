@@ -133,27 +133,6 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
 
         <div className="flex flex-col gap-2">
           <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
-            Color
-          </span>
-          <div className="flex flex-wrap gap-2.5">
-            {HABIT_COLORS.map((c) => (
-              <button
-                key={c}
-                type="button"
-                onClick={() => setColor(c)}
-                aria-label={`color ${c}`}
-                className={cn(
-                  'h-7 w-7 cursor-pointer rounded-full transition-transform',
-                  color === c && 'scale-110 ring-2 ring-slate-900/70 ring-offset-2',
-                )}
-                style={{ background: c }}
-              />
-            ))}
-          </div>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <span className="text-[11px] font-bold uppercase tracking-wider text-slate-400">
             Icon
           </span>
           <div className="grid grid-cols-7 gap-1.5">
