@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { TodayPage } from '@/pages/Today'
+import { CompletedPage } from '@/pages/Completed'
 import { CalendarPage } from '@/pages/Calendar'
 import { ProfilePage } from '@/pages/Profile'
 import { PhasePieChart } from '@/components/today/PhasePieChart'
@@ -9,10 +10,11 @@ import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
 import { cn } from '@/lib/utils'
 
-type View = 'today' | 'calendar' | 'profile'
+type View = 'today' | 'completed' | 'calendar' | 'profile'
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'today', label: 'Today', icon: 'bolt' },
+  { id: 'completed', label: 'Completed', icon: 'check' },
   { id: 'calendar', label: 'Calendar', icon: 'calendar' },
   { id: 'profile', label: 'Profile', icon: 'chart' },
 ]
@@ -85,6 +87,7 @@ export function Shell() {
               transition={{ duration: 0.22, ease: 'easeOut' }}
             >
               {view === 'today' && <TodayPage />}
+              {view === 'completed' && <CompletedPage />}
               {view === 'calendar' && <CalendarPage />}
               {view === 'profile' && <ProfilePage />}
             </motion.div>
@@ -94,7 +97,7 @@ export function Shell() {
 
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/85 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="grid grid-cols-3">
+        <div className="grid grid-cols-4">
           {NAV.map((item) => (
             <button
               key={item.id}

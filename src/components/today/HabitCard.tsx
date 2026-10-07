@@ -121,12 +121,8 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
         triggerClassName="grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
         trigger={<Icon name="more" size={16} />}
         items={[
+          { label: 'Completed', onClick: onToggle, icon: 'check' },
           { label: 'Edit', onClick: () => setEditing(true), icon: 'edit' },
-          {
-            label: habit.archived ? 'Restore' : 'Archive',
-            onClick: () => toggleArchive(habit),
-            icon: 'archive',
-          },
           { label: 'Delete', onClick: () => setConfirming(true), icon: 'trash', danger: true },
         ]}
       />
