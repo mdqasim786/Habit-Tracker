@@ -147,10 +147,13 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const setCompleted = useCallback(
     async (habitId: string, date: string, completed: boolean, phase?: Phase) => {
       if (!uid || !db) return
-      const legacyRef = doc(db, 'users', uid, 'completions', `${habitId}_${date}`)
-      const phaseRef = phase ? doc(db, 'users', uid, 'completions', `${habitId}_${date}_${phase}`) : null
+      const firestore = db
+      const legacyRef = doc(firestore, 'users', uid, 'completions', `${habitId}_${date}`)
+      const phaseRef = phase
+        ? doc(firestore, 'users', uid, 'completions', `${habitId}_${date}_${phase}`)
+        : null
       const phaseRefs = PHASES.map((p) =>
-        doc(db, 'users', uid, 'completions', `${habitId}_${date}_${p.id}`),
+        doc(firestore, 'users', uid, 'completions', `${habitId}_${date}_${p.id}`),
       )
 
       if (completed) {

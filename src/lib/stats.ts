@@ -1,4 +1,4 @@
-import type { Completion, DayStatus, Habit, Stats } from './types'
+import type { Completion, DayStatus, Habit, Phase, Stats } from './types'
 import { addDays, isScheduled, todayStr } from './utils'
 import { computeStreaks } from './streak'
 

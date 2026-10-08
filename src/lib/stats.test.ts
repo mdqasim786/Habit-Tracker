@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { computeStreaks } from './streak'
 import { computeStats, dayStatus, isDone } from './stats'
 import { normalizePhases, phaseIncludes } from './constants'
-import type { Habit } from './types'
+import type { Completion, Habit } from './types'
 
 describe('computeStreaks', () => {
   it('counts consecutive successful days back from today', () => {
@@ -94,7 +94,9 @@ describe('multi-phase habits', () => {
   })
 
   it('keeps completion separate by phase for the same habit', () => {
-    const completions = [{ habitId: 'habit-1', date: '2026-08-09', completedAt: 'x', phase: 'morning' }]
+    const completions: Completion[] = [
+      { habitId: 'habit-1', date: '2026-08-09', completedAt: 'x', phase: 'morning' },
+    ]
     expect(isDone(completions, 'habit-1', '2026-08-09', 'morning')).toBe(true)
     expect(isDone(completions, 'habit-1', '2026-08-09', 'evening')).toBe(false)
   })
