@@ -21,7 +21,8 @@ import {
 } from 'firebase/firestore'
 import { db } from '@/lib/firebase'
 import { useAuth } from '@/context/AuthContext'
-import type { Completion, DayStatus, Habit, NewHabit, Stats } from '@/lib/types'
+import { PHASES } from '@/lib/constants'
+import type { Completion, DayStatus, Habit, NewHabit, Phase, Stats } from '@/lib/types'
 import { dayStatus, computeStats, isDone } from '@/lib/stats'
 import { isScheduled } from '@/lib/utils'
 
@@ -35,8 +36,8 @@ interface DataContextValue {
   updateHabit: (id: string, patch: Partial<Habit>) => Promise<void>
   toggleArchive: (habit: Habit) => Promise<void>
   deleteHabit: (id: string) => Promise<void>
-  setCompleted: (habitId: string, date: string, completed: boolean) => Promise<void>
-  isDoneOn: (habitId: string, date: string) => boolean
+  setCompleted: (habitId: string, date: string, completed: boolean, phase?: Phase) => Promise<void>
+  isDoneOn: (habitId: string, date: string, phase?: Phase) => boolean
   statusOf: (date: string) => DayStatus
   dueOn: (date: string) => Habit[]
 }
@@ -87,7 +88,7 @@ export function DataProvider({ children }: { children: ReactNode }) {
   )
 
   const isDoneOn = useCallback(
-    (habitId: string, date: string) => isDone(completions, habitId, date),
+    (habitId: string, date: string, phase?: Phase) => isDone(completions, habitId, date, phase),
     [completions],
   )
 
@@ -144,13 +145,29 @@ export function DataProvider({ children }: { children: ReactNode }) {
   )
 
   const setCompleted = useCallback(
-    async (habitId: string, date: string, completed: boolean) => {
+    async (habitId: string, date: string, completed: boolean, phase?: Phase) => {
       if (!uid || !db) return
-      const ref = doc(db, 'users', uid, 'completions', `${habitId}_${date}`)
+      const legacyRef = doc(db, 'users', uid, 'completions', `${habitId}_${date}`)
+      const phaseRef = phase ? doc(db, 'users', uid, 'completions', `${habitId}_${date}_${phase}`) : null
+      const phaseRefs = PHASES.map((p) =>
+        doc(db, 'users', uid, 'completions', `${habitId}_${date}_${p.id}`),
+      )
+
       if (completed) {
-        await setDoc(ref, { habitId, date, completedAt: new Date().toISOString() })
+        const ref = phaseRef ?? legacyRef
+        await setDoc(ref, {
+          habitId,
+          date,
+          completedAt: new Date().toISOString(),
+          ...(phase ? { phase } : {}),
+        })
+        if (phaseRef) {
+          await deleteDoc(legacyRef)
+        }
       } else {
-        await deleteDoc(ref)
+        if (phaseRef) await deleteDoc(phaseRef)
+        for (const ref of phaseRefs) await deleteDoc(ref)
+        await deleteDoc(legacyRef)
       }
     },
     [uid],

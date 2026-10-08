@@ -21,6 +21,7 @@ export interface Completion {
   habitId: string
   date: string // YYYY-MM-DD (local)
   completedAt: string // ISO timestamp
+  phase?: Phase
 }
 
 export type NewHabit = Omit<Habit, 'id' | 'createdAt' | 'archived'>

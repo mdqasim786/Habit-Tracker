@@ -31,8 +31,8 @@ export function TodayPage() {
     wasAllDone.current = allDone
   }, [allDone])
 
-  const toggle = (habitId: string) =>
-    setCompleted(habitId, today, !isDoneOn(habitId, today))
+  const toggle = (habitId: string, phase?: 'morning' | 'afternoon' | 'evening') =>
+    setCompleted(habitId, today, !isDoneOn(habitId, today, phase), phase)
 
   const visible = useMemo(() => {
     let list = due
@@ -44,7 +44,7 @@ export function TodayPage() {
 
   const grouped = PHASES.map((p) => {
     const habitsInPhase = visible.filter((h) => phaseIncludes(h.phase, p.id))
-    const doneInPhase = habitsInPhase.filter((h) => isDoneOn(h.id, today)).length
+    const doneInPhase = habitsInPhase.filter((h) => isDoneOn(h.id, today, p.id)).length
     return { ...p, habits: habitsInPhase, done: doneInPhase }
   })
   const unassigned = visible.filter((h) => normalizePhases(h.phase).length === 0)
@@ -164,11 +164,12 @@ export function TodayPage() {
                 <div className="flex flex-col gap-3">
                   {phase.habits.map((h, i) => (
                     <HabitCard
-                      key={h.id}
+                      key={`${h.id}-${phase.id}`}
                       habit={h}
                       index={i}
-                      done={isDoneOn(h.id, today)}
-                      onToggle={() => toggle(h.id)}
+                      done={isDoneOn(h.id, today, phase.id)}
+                      onToggle={() => toggle(h.id, phase.id)}
+                      phase={phase.id}
                     />
                   ))}
                 </div>

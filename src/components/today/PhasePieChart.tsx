@@ -21,7 +21,7 @@ function getPhaseData(habits: Habit[], completions: Completion[]): PhaseSlice[] 
     const phaseHabits = habits.filter(
       (h) => !h.archived && phaseIncludes(h.phase, p.id) && isScheduled(h, today),
     )
-    const completed = phaseHabits.filter((h) => isDone(completions, h.id, today)).length
+    const completed = phaseHabits.filter((h) => isDone(completions, h.id, today, p.id)).length
     return { phase: p.id, completed, total: phaseHabits.length }
   })
 }

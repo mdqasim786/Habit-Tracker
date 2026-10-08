@@ -4,7 +4,7 @@ import { Modal } from '@/components/ui/modal'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
-import { DAY_ORDER } from '@/lib/constants'
+import { DAY_ORDER, normalizePhases } from '@/lib/constants'
 import { fmtLong, toDateStr, todayStr } from '@/lib/utils'
 import { cn } from '@/lib/utils'
 
@@ -176,10 +176,11 @@ function DayDetailModal({ date, onClose }: { date: string | null; onClose: () =>
         <ul className="flex flex-col gap-2">
           {due.map((h) => {
             const done = isDoneOn(h.id, date)
+            const phase = normalizePhases(h.phase)[0]
             return (
               <li key={h.id}>
                 <button
-                  onClick={() => setCompleted(h.id, date, !done)}
+                  onClick={() => setCompleted(h.id, date, !done, phase)}
                   className={cn(
                     'flex w-full cursor-pointer items-center gap-3 rounded-xl border px-3 py-3 text-left transition-colors',
                     done

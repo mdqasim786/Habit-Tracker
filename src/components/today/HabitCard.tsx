@@ -7,17 +7,18 @@ import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
 import { DAY_ORDER, phaseColor } from '@/lib/constants'
-import type { Habit } from '@/lib/types'
+import type { Habit, Phase } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
 interface HabitCardProps {
   habit: Habit
   done: boolean
-  onToggle: () => void
+  onToggle: (phase?: Phase) => void
   index: number
+  phase?: Phase
 }
 
-export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
+export function HabitCard({ habit, done, onToggle, index, phase }: HabitCardProps) {
   const { deleteHabit } = useData()
   const [editing, setEditing] = useState(false)
   const [confirming, setConfirming] = useState(false)
@@ -53,7 +54,7 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
     >
       <motion.button
         layout
-        onClick={onToggle}
+        onClick={() => onToggle(phase)}
         aria-pressed={done}
         aria-label={done ? 'Mark incomplete' : `Complete ${habit.title}`}
         className={cn(
@@ -121,7 +122,7 @@ export function HabitCard({ habit, done, onToggle, index }: HabitCardProps) {
         triggerClassName="grid h-8 w-8 shrink-0 cursor-pointer place-items-center rounded-lg text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-700"
         trigger={<Icon name="more" size={16} />}
         items={[
-          { label: 'Completed', onClick: onToggle, icon: 'check' },
+          { label: 'Completed', onClick: () => onToggle(phase), icon: 'check' },
           { label: 'Edit', onClick: () => setEditing(true), icon: 'edit' },
           { label: 'Delete', onClick: () => setConfirming(true), icon: 'trash', danger: true },
         ]}

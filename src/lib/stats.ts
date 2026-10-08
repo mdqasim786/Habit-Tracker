@@ -2,8 +2,18 @@ import type { Completion, DayStatus, Habit, Stats } from './types'
 import { addDays, isScheduled, todayStr } from './utils'
 import { computeStreaks } from './streak'
 
-export function isDone(completions: readonly Completion[], habitId: string, date: string): boolean {
-  return completions.some((c) => c.habitId === habitId && c.date === date)
+export function isDone(
+  completions: readonly Completion[],
+  habitId: string,
+  date: string,
+  phase?: Phase,
+): boolean {
+  return completions.some(
+    (c) =>
+      c.habitId === habitId &&
+      c.date === date &&
+      (phase == null || c.phase === phase || c.phase == null),
+  )
 }
 
 export function activeHabits(habits: readonly Habit[]): Habit[] {

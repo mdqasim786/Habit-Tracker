@@ -58,7 +58,7 @@ export function CompletedPage() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => setCompleted(habit.id, today, false)}
+                onClick={() => setCompleted(habit.id, today, false, Array.isArray(habit.phase) ? habit.phase[0] : habit.phase)}
                 className="text-slate-600"
               >
                 Undo
