@@ -5,10 +5,8 @@ import { CompletedPage } from '@/pages/Completed'
 import { CalendarPage } from '@/pages/Calendar'
 import { ProfilePage } from '@/pages/Profile'
 import { SettingsPage } from '@/pages/Settings'
-import { PhasePieChart } from '@/components/today/PhasePieChart'
 import { useAuth } from '@/context/AuthContext'
 import { Icon } from '@/components/ui/Icon'
-import { useData } from '@/context/DataContext'
 import { cn } from '@/lib/utils'
 
 type View = 'today' | 'completed' | 'calendar' | 'profile' | 'settings'
@@ -24,44 +22,53 @@ const NAV: { id: View; label: string; icon: string }[] = [
 export function Shell() {
   const [view, setView] = useState<View>('today')
   const { user, signOutUser } = useAuth()
-  const { habits, completions } = useData()
 
   return (
-    <div className="flex min-h-dvh">
-      <aside className="fixed inset-y-0 left-0 z-30 hidden w-64 flex-col border-r border-slate-200 bg-white p-5 lg:flex">
-        <div className="mb-8 flex items-center gap-2.5 px-1 pt-1">
+    <div className="flex min-h-dvh bg-slate-100/80">
+      <aside className="fixed inset-y-0 left-0 z-30 hidden w-72 flex-col border-r border-slate-200 bg-white/90 p-5 shadow-[12px_0_30px_-20px_rgba(15,23,42,0.25)] backdrop-blur-xl lg:flex">
+        <div className="mb-8 flex items-center gap-3 px-1 pt-1">
           <LogoMark />
-          <span className="text-[17px] font-bold tracking-tight text-slate-900">Discipline</span>
+          <div>
+            <span className="block text-[17px] font-bold tracking-tight text-slate-900">Discipline</span>
+            <span className="text-[10px] font-medium uppercase tracking-[0.22em] text-slate-400">
+              Habit OS
+            </span>
+          </div>
         </div>
-        <nav className="flex flex-col gap-1">
+
+        <nav className="space-y-1.5">
           {NAV.map((item) => (
             <button
               key={item.id}
               onClick={() => setView(item.id)}
               className={cn(
-                'flex cursor-pointer items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-semibold transition-colors',
+                'flex w-full cursor-pointer items-center gap-3 rounded-2xl px-3 py-2.5 text-sm font-semibold transition-all duration-200',
                 view === item.id
-                  ? 'bg-emerald-50 text-emerald-700'
-                  : 'text-slate-500 hover:bg-slate-50 hover:text-slate-900',
+                  ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 text-white shadow-lg shadow-emerald-600/25'
+                  : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900',
               )}
             >
-              <Icon name={item.icon} size={18} />
+              <span
+                className={cn(
+                  'flex h-8 w-8 items-center justify-center rounded-xl border transition-colors',
+                  view === item.id
+                    ? 'border-white/30 bg-white/10 text-white'
+                    : 'border-slate-200 bg-slate-50 text-slate-500',
+                )}
+              >
+                <Icon name={item.icon} size={16} />
+              </span>
               {item.label}
             </button>
           ))}
         </nav>
-        <div className="mt-6 rounded-2xl border border-slate-200 bg-white p-4 shadow-sm shadow-slate-900/5">
-          <p className="mb-3 text-center text-[10px] font-bold uppercase tracking-widest text-slate-400">
-            Today's Phases
-          </p>
-          <PhasePieChart habits={habits} completions={completions} />
-        </div>
+
         <div className="mt-auto">
-          <div className="rounded-2xl border border-slate-200 bg-slate-50 p-3">
-            <div className="flex items-center gap-2.5">
+          <div className="rounded-3xl border border-slate-200 bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-3 shadow-sm shadow-slate-900/5">
+            <div className="flex items-center gap-3">
               <Avatar email={user?.email ?? '?'} />
               <div className="min-w-0">
-                <p className="truncate text-xs font-semibold text-slate-800">
+                <p className="truncate text-sm font-semibold text-slate-800">
                   {user?.displayName ?? 'Habit keeper'}
                 </p>
                 <p className="truncate text-[11px] text-slate-500">{user?.email}</p>
@@ -69,7 +76,7 @@ export function Shell() {
             </div>
             <button
               onClick={signOutUser}
-              className="mt-3 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-1.5 text-xs font-semibold text-slate-500 transition-colors hover:text-slate-900"
+              className="mt-3 flex w-full cursor-pointer items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white py-2 text-xs font-semibold text-slate-600 transition-colors hover:border-slate-300 hover:text-slate-900"
             >
               <Icon name="logout" size={13} />
               Sign out
@@ -78,7 +85,7 @@ export function Shell() {
         </div>
       </aside>
 
-      <div className="flex-1 lg:pl-64">
+      <div className="flex-1 lg:pl-72">
         <main>
           <AnimatePresence mode="wait">
             <motion.div
@@ -100,17 +107,24 @@ export function Shell() {
 
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/85 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="grid grid-cols-5">
+        <div className="grid grid-cols-5 bg-white/95 backdrop-blur-xl">
           {NAV.map((item) => (
             <button
               key={item.id}
               onClick={() => setView(item.id)}
               className={cn(
-                'flex cursor-pointer flex-col items-center gap-1 py-3 text-[10px] font-semibold transition-colors',
+                'flex cursor-pointer flex-col items-center gap-1 py-3 text-[10px] font-semibold transition-all duration-200',
                 view === item.id ? 'text-emerald-600' : 'text-slate-400',
               )}
             >
-              <Icon name={item.icon} size={19} />
+              <span
+                className={cn(
+                  'flex h-8 w-8 items-center justify-center rounded-xl',
+                  view === item.id ? 'bg-emerald-100 text-emerald-600' : 'bg-transparent',
+                )}
+              >
+                <Icon name={item.icon} size={19} />
+              </span>
               {item.label}
             </button>
           ))}
