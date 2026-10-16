@@ -45,16 +45,103 @@ export const ALL_DAYS = DAY_ORDER.map((d) => d.wd)
 export interface PhaseInfo {
   id: Phase
   label: string
+  start: string
+  end: string
   timeRange: string
   color: string
   dimColor: string
 }
 
 export const PHASES: PhaseInfo[] = [
-  { id: 'morning', label: 'Morning', timeRange: '5:00 AM – 10:00 AM', color: '#fbbf24', dimColor: '#fbbf2440' },
-  { id: 'afternoon', label: 'Afternoon', timeRange: '10:00 AM – 6:00 PM', color: '#22d3ee', dimColor: '#22d3ee40' },
-  { id: 'evening', label: 'Evening', timeRange: '6:00 PM – 10:00 PM', color: '#818cf8', dimColor: '#818cf840' },
+  {
+    id: 'morning',
+    label: 'Morning',
+    start: '05:00',
+    end: '10:00',
+    timeRange: '5:00 AM – 10:00 AM',
+    color: '#fbbf24',
+    dimColor: '#fbbf2440',
+  },
+  {
+    id: 'afternoon',
+    label: 'Afternoon',
+    start: '10:00',
+    end: '18:00',
+    timeRange: '10:00 AM – 6:00 PM',
+    color: '#22d3ee',
+    dimColor: '#22d3ee40',
+  },
+  {
+    id: 'evening',
+    label: 'Evening',
+    start: '18:00',
+    end: '22:00',
+    timeRange: '6:00 PM – 10:00 PM',
+    color: '#818cf8',
+    dimColor: '#818cf840',
+  },
 ]
+
+const PHASE_SETTINGS_KEY = 'discipline.phase-settings'
+
+function formatClock(value: string) {
+  const [hours, minutes] = value.split(':').map(Number)
+  if (Number.isNaN(hours) || Number.isNaN(minutes)) return ''
+
+  const safeHour = ((hours % 12) + 12) % 12 || 12
+  const meridiem = hours >= 12 ? 'PM' : 'AM'
+  return `${safeHour}:${String(minutes).padStart(2, '0')} ${meridiem}`
+}
+
+export function formatPhaseTimeRange(start: string, end: string): string {
+  const startLabel = formatClock(start)
+  const endLabel = formatClock(end)
+  return startLabel && endLabel ? `${startLabel} – ${endLabel}` : 'Custom hours'
+}
+
+export function getPhaseSettings(): PhaseInfo[] {
+  if (typeof window === 'undefined') return PHASES
+
+  try {
+    const saved = JSON.parse(localStorage.getItem(PHASE_SETTINGS_KEY) ?? 'null') ?? {}
+    return PHASES.map((phase) => {
+      const override = saved[phase.id] ?? {}
+      const start = String(override.start ?? phase.start)
+      const end = String(override.end ?? phase.end)
+      const label = String(override.label ?? phase.label).trim() || phase.label
+
+      return {
+        ...phase,
+        label,
+        start,
+        end,
+        timeRange: formatPhaseTimeRange(start, end),
+      }
+    })
+  } catch {
+    return PHASES
+  }
+}
+
+export function savePhaseSettings(settings: Partial<Record<Phase, { label?: string; start?: string; end?: string }>>) {
+  if (typeof window === 'undefined') return
+
+  const next = { ...JSON.parse(localStorage.getItem(PHASE_SETTINGS_KEY) ?? '{}') }
+  for (const [phaseId, value] of Object.entries(settings)) {
+    const phase = phaseId as Phase
+    next[phase] = {
+      ...(next[phase] ?? {}),
+      ...(value ?? {}),
+    }
+  }
+
+  localStorage.setItem(PHASE_SETTINGS_KEY, JSON.stringify(next))
+}
+
+export function resetPhaseSettings() {
+  if (typeof window === 'undefined') return
+  localStorage.removeItem(PHASE_SETTINGS_KEY)
+}
 
 export function normalizePhases(phase?: Phase | Phase[] | null): Phase[] {
   if (!phase) return []
@@ -71,10 +158,10 @@ export function phaseIncludes(phase: Phase | Phase[] | null | undefined, target:
 
 export function phaseColor(phase?: Phase | Phase[] | null): string {
   const primary = normalizePhases(phase)[0]
-  return PHASES.find((p) => p.id === primary)?.color ?? '#52525b'
+  return getPhaseSettings().find((p) => p.id === primary)?.color ?? '#52525b'
 }
 
 export function phaseInfo(phase?: Phase | Phase[] | null): PhaseInfo | undefined {
   const primary = normalizePhases(phase)[0]
-  return PHASES.find((p) => p.id === primary)
+  return getPhaseSettings().find((p) => p.id === primary)
 }
