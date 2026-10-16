@@ -29,12 +29,13 @@ function getPhaseData(habits: Habit[], completions: Completion[]): PhaseSlice[] 
 
 export function PhasePieChart({ habits, completions }: PhasePieChartProps) {
   const phaseData = getPhaseData(habits, completions)
+  const settings = getPhaseSettings()
   const totalHabits = phaseData.reduce((s, p) => s + p.total, 0)
   const totalDone = phaseData.reduce((s, p) => s + p.completed, 0)
   const overallPct = totalHabits > 0 ? Math.round((totalDone / totalHabits) * 100) : 0
 
   const chartData = phaseData.map((p) => {
-    const info = PHASES.find((ph) => ph.id === p.phase)!
+    const info = settings.find((ph) => ph.id === p.phase)!
     const done = p.completed
     const remaining = p.total - p.completed
     return { phase: p.phase, done, remaining, color: info.color, dimColor: info.dimColor, total: p.total }
