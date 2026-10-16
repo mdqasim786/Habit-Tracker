@@ -4,19 +4,21 @@ import { TodayPage } from '@/pages/Today'
 import { CompletedPage } from '@/pages/Completed'
 import { CalendarPage } from '@/pages/Calendar'
 import { ProfilePage } from '@/pages/Profile'
+import { SettingsPage } from '@/pages/Settings'
 import { PhasePieChart } from '@/components/today/PhasePieChart'
 import { useAuth } from '@/context/AuthContext'
 import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
 import { cn } from '@/lib/utils'
 
-type View = 'today' | 'completed' | 'calendar' | 'profile'
+type View = 'today' | 'completed' | 'calendar' | 'profile' | 'settings'
 
 const NAV: { id: View; label: string; icon: string }[] = [
   { id: 'today', label: 'Today', icon: 'bolt' },
   { id: 'completed', label: 'Completed', icon: 'check' },
   { id: 'calendar', label: 'Calendar', icon: 'calendar' },
   { id: 'profile', label: 'Profile', icon: 'chart' },
+  { id: 'settings', label: 'Settings', icon: 'settings' },
 ]
 
 export function Shell() {
@@ -90,6 +92,7 @@ export function Shell() {
               {view === 'completed' && <CompletedPage />}
               {view === 'calendar' && <CalendarPage />}
               {view === 'profile' && <ProfilePage />}
+              {view === 'settings' && <SettingsPage />}
             </motion.div>
           </AnimatePresence>
         </main>
@@ -97,7 +100,7 @@ export function Shell() {
 
       {/* Mobile bottom nav */}
       <nav className="fixed inset-x-0 bottom-0 z-30 border-t border-slate-200 bg-white/85 pb-[env(safe-area-inset-bottom)] backdrop-blur lg:hidden">
-        <div className="grid grid-cols-4">
+        <div className="grid grid-cols-5">
           {NAV.map((item) => (
             <button
               key={item.id}

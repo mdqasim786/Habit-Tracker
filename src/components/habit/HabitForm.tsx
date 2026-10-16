@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input'
 import { Icon } from '@/components/ui/Icon'
 import { DayPicker } from '@/components/habit/DayPicker'
 import { useData } from '@/context/DataContext'
-import { ALL_DAYS, HABIT_COLORS, HABIT_ICONS, PHASES, normalizePhases } from '@/lib/constants'
+import { ALL_DAYS, HABIT_COLORS, HABIT_ICONS, getPhaseSettings, normalizePhases } from '@/lib/constants'
 import type { Habit, NewHabit, Phase } from '@/lib/types'
 import { cn } from '@/lib/utils'
 
@@ -23,6 +23,7 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
   const [color, setColor] = useState(HABIT_COLORS[0])
   const [icon, setIcon] = useState(HABIT_ICONS[0])
   const [phases, setPhases] = useState<Phase[]>(['morning'])
+  const phaseOptions = getPhaseSettings()
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const savingRef = useRef(false)
@@ -115,7 +116,7 @@ export function HabitForm({ open, onClose, habit }: HabitFormProps) {
             Phase of day
           </span>
           <div className="flex gap-2">
-            {PHASES.map((p) => {
+            {phaseOptions.map((p) => {
               const selected = phases.includes(p.id)
               return (
                 <button

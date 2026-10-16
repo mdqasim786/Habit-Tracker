@@ -1,5 +1,5 @@
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts'
-import { PHASES, phaseIncludes } from '@/lib/constants'
+import { getPhaseSettings, phaseIncludes } from '@/lib/constants'
 import { isScheduled, todayStr } from '@/lib/utils'
 import { isDone } from '@/lib/stats'
 import type { Habit, Completion, Phase } from '@/lib/types'
@@ -17,7 +17,8 @@ interface PhaseSlice {
 
 function getPhaseData(habits: Habit[], completions: Completion[]): PhaseSlice[] {
   const today = todayStr()
-  return PHASES.map((p) => {
+  const phases = getPhaseSettings()
+  return phases.map((p) => {
     const phaseHabits = habits.filter(
       (h) => !h.archived && phaseIncludes(h.phase, p.id) && isScheduled(h, today),
     )
@@ -106,7 +107,7 @@ export function PhasePieChart({ habits, completions }: PhasePieChartProps) {
       </div>
       <div className="flex w-full flex-col gap-1.5">
         {phaseData.map((p) => {
-          const info = PHASES.find((ph) => ph.id === p.phase)!
+          const info = getPhaseSettings().find((ph) => ph.id === p.phase)!
           const pct = p.total > 0 ? Math.round((p.completed / p.total) * 100) : 0
           return (
             <div key={p.phase} className="flex items-center gap-2 text-xs">

@@ -7,7 +7,7 @@ import { HabitForm } from '@/components/habit/HabitForm'
 import { Button } from '@/components/ui/button'
 import { Icon } from '@/components/ui/Icon'
 import { useData } from '@/context/DataContext'
-import { PHASES, normalizePhases, phaseIncludes } from '@/lib/constants'
+import { getPhaseSettings, normalizePhases, phaseIncludes } from '@/lib/constants'
 import { cn, fmtLong, todayStr } from '@/lib/utils'
 
 type Filter = 'all' | 'morning' | 'afternoon' | 'evening' | 'unassigned'
@@ -25,6 +25,7 @@ export function TodayPage() {
   const wasAllDone = useRef(false)
   const [filter, setFilter] = useState<Filter>('all')
   const [hideDone, setHideDone] = useState(false)
+  const phases = getPhaseSettings()
 
   useEffect(() => {
     if (allDone && !wasAllDone.current) setBursts((b) => b + 1)
@@ -42,7 +43,7 @@ export function TodayPage() {
     return list
   }, [due, filter, hideDone, isDoneOn, today])
 
-  const grouped = PHASES.map((p) => {
+  const grouped = phases.map((p) => {
     const habitsInPhase = visible.filter((h) => phaseIncludes(h.phase, p.id))
     const doneInPhase = habitsInPhase.filter((h) => isDoneOn(h.id, today, p.id)).length
     return { ...p, habits: habitsInPhase, done: doneInPhase }
@@ -104,7 +105,7 @@ export function TodayPage() {
             <FilterChip active={filter === 'all'} onClick={() => setFilter('all')}>
               All
             </FilterChip>
-            {PHASES.map((p) => (
+            {phases.map((p) => (
               <FilterChip
                 key={p.id}
                 active={filter === p.id}
